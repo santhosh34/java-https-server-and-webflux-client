@@ -1,0 +1,51 @@
+Step 1) Org Root CA Generation
+    Without Config
+        $openssl req -x509 -sha256 -days 3650 -newkey rsa:4096 /
+            -keyout orgrootkey.key -out orgrootcert.crt
+            passphrase: password
+            common name: statemachine
+
+    With config to add IP in SAN: 
+        $openssl req -x509 -sha256 -days 3650 -newkey rsa:4096 -keyout orgroot.key -out orgroot.crt -config ../cert-process/config/san1.cnf
+        passphrase: password ( 2 times )
+        common name: statemachine
+
+Ref: All configuration Options Are avalable here: https://www.openssl.org/docs/man1.0.2/man1/openssl-req.html
+
+    Validation: 
+        $cat orgroot.key
+        $cat orgroot.crt
+
+        $openssl pkey -in orgroot.key -text -noout
+
+        Above command will generate both publicExponent and privateExponent.. Lets say you want to expose only the public: 
+
+        $openssl pkey -in orgroorgroototkey.key -pubout -out orgroot-publicexponent.key
+
+
+Step 2) Server Private Key Generation
+        $ openssl req -new -newkey rsa:4096 -keyout statemachineserver.key -out statemachineserver.csr -config ../cert-process/config/san1.cnf
+        passphrase: password
+
+Step 3) Sign the above csr with orgrootca 
+
+     openssl x509 -req -CA orgroot.crt -CAkey orgroot.key -in statemachineserver.csr -out statemachineserver.crt -days 365  -CAcreateserial  -extfile ../cert-process/config/extconfig.ext
+
+Step 4) Validation:   
+         openssl x509 -in statemachineserver.crt -text
+
+Step 5) Create the pk12 file
+        openssl pkcs12 -export -out statemachineserver.p12 -name "statemachineserver" -inkey statemachineserver.key -in statemachineserver.crt
+         passphrase: password
+    
+        ssl:
+        enabled: true
+        key-store: classpath:statemachineserver.p12
+        key-store-password: pass
+        key-store-type: pkcs12
+        key-alias: statemachineserver
+        key-password: pass
+
+Step 6) Generate JKS file to copy to client java program resources folder and call the service using webclient
+      
+      keytool -importkeystore -srckeystore statemachineserver.p12 -srcstoretype PKCS12 -destkeystore clientkeystore.jks -deststoretype JKS

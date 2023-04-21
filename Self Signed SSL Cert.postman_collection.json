@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "c0f39b97-5f3f-4368-975e-1907c470c372",
+		"name": "Self Signed SSL Cert",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "646169"
+	},
+	"item": [
+		{
+			"name": "Spring 3",
+			"item": [
+				{
+					"name": "Server Direct Req",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8443/weather/singapore",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"weather",
+								"singapore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Client health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/actuator/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Game Org Client Getting Weather details from Weather Service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/games/singapore",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"games",
+								"singapore"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
